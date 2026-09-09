@@ -1,0 +1,76 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">EL PRÓXIMO DESAFÍO</p>
+    <h1>Calendario</h1>
+    <p>Entrenamientos, competencias y reuniones en un mismo lugar.</p>
+  </div>
+  <button class="primary" (click)="open()">＋ Crear evento</button>
+</div>
+<div class="filterbar">
+  @for (team of filters(); track team) {
+    <button [class.selected]="filter() === team" (click)="filter.set(team)">
+      {{ team }}
+    </button>
+  }
+</div>
+<section class="panel calendarlist">
+  <div class="panelhead">
+    <h2>Agenda del equipo</h2>
+    <span class="muted">Hora Argentina</span>
+  </div>
+  <app-event-list
+    [events]="filtered()"
+    [editable]="true"
+    (edit)="open($event)"
+    (remove)="requestDelete($event)"
+  />
+</section>
+<dialog #dialog>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="dialoghead">
+      <h2>{{ editing ? "Editar evento" : "Nuevo evento" }}</h2>
+      <button type="button" (click)="dialog.close()" aria-label="Cerrar">
+        ×
+      </button>
+    </div>
+    <label
+      >Nombre del evento<input
+        formControlName="name"
+        maxlength="100"
+        autofocus /></label
+    ><label
+      >Equipo<select formControlName="team">
+        @for (team of filters().slice(1); track team) {
+          <option>{{ team }}</option>
+        }
+      </select></label
+    >
+    <div class="formrow">
+      <label>Fecha<input type="date" formControlName="date" /></label
+      ><label>Hora<input type="time" formControlName="time" /></label>
+    </div>
+    <label
+      >Tipo<select formControlName="type">
+        <option>Entrenamiento</option>
+        <option>Competencia</option>
+        <option>Reunión</option>
+      </select></label
+    >
+    @if (attempted && form.invalid) {
+      <p class="error">Completá todos los campos.</p>
+    }
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    <button class="primary" type="submit">Guardar evento</button>
+  </form>
+</dialog>
+<dialog #confirmation>
+  <h2>¿Eliminar este evento?</h2>
+  <p>{{ deleting?.name }}</p>
+  <div class="actions">
+    <button (click)="confirmation.close()">Cancelar</button
+    ><button class="primary" (click)="confirmDelete()">Eliminar</button>
+  </div>
+</dialog>
+<p role="status" class="success">{{ message() }}</p>

@@ -1,0 +1,25 @@
+@for (task of tasks(); track task.id) {
+  <div class="task" [class.completed]="task.done">
+    <input
+      type="checkbox"
+      [checked]="task.done"
+      (change)="store.toggleTask(task.id)"
+      [attr.aria-label]="'Completar ' + task.name"
+    /><span
+      ><strong>{{ task.name }}</strong
+      ><small
+        >{{ task.who }} · {{ task.team }} ·
+        {{ task.due | date: "dd/MM/yyyy" }}</small
+      ></span
+    >
+    @if (task.priority && !task.done) {
+      <span class="priority">ALTA</span>
+    }
+    @if (editable()) {
+      <button class="link" (click)="edit.emit(task)">Editar</button
+      ><button class="link danger" (click)="remove.emit(task)">Eliminar</button>
+    }
+  </div>
+} @empty {
+  <p class="empty">No hay tareas en esta vista.</p>
+}

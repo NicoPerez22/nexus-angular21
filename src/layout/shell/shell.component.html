@@ -1,0 +1,10 @@
+<app-sidebar />
+<div class="workspace">
+  <app-header />
+  <main>
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    <router-outlet /><app-footer />
+  </main>
+</div>

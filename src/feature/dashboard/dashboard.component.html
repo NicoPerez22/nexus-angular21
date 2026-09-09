@@ -1,0 +1,105 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">TU EQUIPO, EN SINTONÍA</p>
+    <h1>Resumen de la organización</h1>
+    <p>Todo lo que necesitás para llevar al equipo al siguiente nivel.</p>
+  </div>
+  <a class="primary" routerLink="/calendario" [queryParams]="{ nuevo: '1' }"
+    >＋ Crear evento</a
+  >
+</div>
+<div class="stats">
+  <div class="stat">
+    <div class="statlabel">Equipos activos <span>♧</span></div>
+    <div class="statvalue">{{ store.teams().length | number: "2.0" }}</div>
+    <div class="statnote">Disciplinas competitivas</div>
+  </div>
+  <div class="stat">
+    <div class="statlabel">Jugadores <span>♙</span></div>
+    <div class="statvalue">{{ store.players() }}</div>
+    <div class="statnote">En todos los rosters</div>
+  </div>
+  <div class="stat">
+    <div class="statlabel">Win rate global <span>↗</span></div>
+    <div class="statvalue">{{ store.winRate() }}<small>%</small></div>
+    <div class="statnote">Promedio de los equipos · Demo</div>
+  </div>
+  <div class="stat">
+    <div class="statlabel">Tareas pendientes <span>☑</span></div>
+    <div class="statvalue">{{ store.pending().length | number: "2.0" }}</div>
+    <div class="statnote">{{ dueToday() }} requieren atención hoy</div>
+  </div>
+</div>
+<div class="grid">
+  <section class="panel">
+    <div class="panelhead">
+      <h2>Agenda de hoy</h2>
+      <a class="link" routerLink="/calendario">Ver calendario ↗</a>
+    </div>
+    <div class="datecaption">{{ today | date: "dd/MM/yyyy" }}</div>
+    <app-event-list [events]="todayEvents()" />
+  </section>
+  <section class="panel">
+    <div class="panelhead">
+      <h2>Próxima competencia</h2>
+      @if (next(); as match) {
+        <span class="pill">{{ match.team }}</span>
+      }
+    </div>
+    <div class="match">
+      @if (next(); as match) {
+        <div class="matchtop">
+          <span>AGENDA COMPETITIVA</span><span>PRÓXIMO ENCUENTRO</span>
+        </div>
+        <div class="matchteams">
+          <div class="club">
+            <div class="crest">N</div>
+            NEXUS
+          </div>
+          <span class="vs">VS</span>
+          <div class="club">
+            <div class="crest enemy">↗</div>
+            RIVAL
+          </div>
+        </div>
+        <h2 class="matchbottom">{{ match.name }}</h2>
+        <p class="matchbottom">
+          {{ match.date | date: "dd/MM/yyyy" }} · {{ match.time }} ART
+        </p>
+      } @else {
+        <p class="empty">No hay competencias próximas.</p>
+      }
+    </div>
+  </section>
+</div>
+<div class="grid lower">
+  <section class="panel">
+    <div class="panelhead">
+      <h2>Nuestros equipos</h2>
+      <a class="link" routerLink="/equipos">Ver equipos ↗</a>
+    </div>
+    <div class="teamrow tablehead">
+      <span>Equipo</span><span>Roster</span><span>Win rate</span
+      ><span>Estado</span>
+    </div>
+    @for (team of store.teams(); track team.id) {
+      <div class="teamrow">
+        <div class="teamname">
+          <span class="gameicon">{{ team.short }}</span>
+          <div>
+            {{ team.name }}<small>{{ team.sub }}</small>
+          </div>
+        </div>
+        <span>{{ team.players.length }} jugadores</span
+        ><span>{{ team.win }}%</span><span class="pill">Activo</span>
+      </div>
+    }
+  </section>
+  <section class="panel">
+    <div class="panelhead">
+      <h2>Tareas pendientes</h2>
+      <a class="link" routerLink="/tareas">Ver todas ↗</a>
+    </div>
+    <app-task-list [tasks]="store.pending().slice(0, 4)" />
+  </section>
+</div>

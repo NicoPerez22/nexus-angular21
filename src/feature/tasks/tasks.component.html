@@ -1,0 +1,66 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">CADA PASO CUENTA</p>
+    <h1>Tareas</h1>
+    <p>Las prioridades del equipo, claras y a la vista.</p>
+  </div>
+  <button class="primary" (click)="open()">＋ Crear tarea</button>
+</div>
+<div class="filterbar">
+  @for (view of ["Todas", "Pendientes", "Completadas"]; track view) {
+    <button [class.selected]="filter() === view" (click)="filter.set(view)">
+      {{ view }}
+    </button>
+  }
+</div>
+<section class="panel">
+  <div class="panelhead">
+    <h2>Plan de trabajo</h2>
+    <span>{{ store.pending().length }} pendientes</span>
+  </div>
+  <app-task-list
+    [tasks]="filtered()"
+    [editable]="true"
+    (edit)="open($event)"
+    (remove)="requestDelete($event)"
+  />
+</section>
+<dialog #dialog>
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="dialoghead">
+      <h2>{{ editing ? "Editar tarea" : "Nueva tarea" }}</h2>
+      <button type="button" (click)="dialog.close()" aria-label="Cerrar">
+        ×
+      </button>
+    </div>
+    <label
+      >Título<input formControlName="name" maxlength="100" autofocus /></label
+    ><label>Responsable<input formControlName="who" maxlength="60" /></label
+    ><label
+      >Equipo o área<select formControlName="team">
+        @for (team of areas(); track team) {
+          <option>{{ team }}</option>
+        }
+      </select></label
+    ><label>Fecha límite<input type="date" formControlName="due" /></label
+    ><label class="checklabel"
+      ><input type="checkbox" formControlName="priority" />Prioridad alta</label
+    >
+    @if (attempted && form.invalid) {
+      <p class="error">Completá todos los campos.</p>
+    }
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    <button class="primary" type="submit">Guardar tarea</button>
+  </form>
+</dialog>
+<dialog #confirmation>
+  <h2>¿Eliminar esta tarea?</h2>
+  <p>{{ deleting?.name }}</p>
+  <div class="actions">
+    <button (click)="confirmation.close()">Cancelar</button
+    ><button class="primary" (click)="confirmDelete()">Eliminar</button>
+  </div>
+</dialog>
+<p role="status" class="success">{{ message() }}</p>

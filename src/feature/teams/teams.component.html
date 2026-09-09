@@ -1,0 +1,67 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">LAS PERSONAS DETRÁS DE CADA PARTIDA</p>
+    <h1>Equipos</h1>
+    <p>Administrá los jugadores y roles de cada roster.</p>
+  </div>
+</div>
+<div class="fullteams">
+  @for (team of store.teams(); track team.id) {
+    <section class="panel teamcard">
+      <span class="gameicon">{{ team.short }}</span>
+      <h2>{{ team.name }}</h2>
+      <p>
+        {{ team.sub }} · {{ team.players.length }} jugadores<br />Win rate
+        {{ team.win }}% · Demo
+      </p>
+      @for (player of team.players; track $index) {
+        <div class="member">
+          <b>{{ player.name }}</b
+          ><span>{{ player.role }}</span>
+        </div>
+      } @empty {
+        <p>Este equipo todavía no tiene jugadores.</p>
+      }
+      <button class="primary rosterbutton" (click)="open(team)">
+        Editar roster
+      </button>
+    </section>
+  }
+</div>
+<dialog #dialog class="rosterdialog">
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <div class="dialoghead">
+      <h2>Roster · {{ editing?.name }}</h2>
+      <button type="button" (click)="dialog.close()" aria-label="Cerrar">
+        ×
+      </button>
+    </div>
+    <div formArrayName="players">
+      @for (player of players.controls; track player; let i = $index) {
+        <div class="playerform" [formGroupName]="i">
+          <label>Jugador<input formControlName="name" maxlength="40" /></label
+          ><label>Rol<input formControlName="role" maxlength="40" /></label
+          ><button
+            type="button"
+            class="link danger"
+            (click)="players.removeAt(i)"
+            [attr.aria-label]="'Quitar jugador ' + (i + 1)"
+          >
+            Quitar
+          </button>
+        </div>
+      }
+    </div>
+    <button class="link" type="button" (click)="add()">
+      ＋ Agregar jugador
+    </button>
+    @if (attempted && form.invalid) {
+      <p class="error">Cada jugador necesita nombre y rol.</p>
+    }
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    <button class="primary rosterbutton" type="submit">Guardar roster</button>
+  </form>
+</dialog>
+<p class="success" role="status">{{ message() }}</p>

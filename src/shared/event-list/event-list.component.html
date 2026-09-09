@@ -1,0 +1,32 @@
+@for (event of events(); track event.id) {
+  <div class="event">
+    <div class="time">
+      {{ event.time }}<small>{{ event.date | date: "dd/MM" }}</small>
+    </div>
+    <span class="eventline"></span>
+    <div class="eventinfo">
+      <strong>{{ event.name }}</strong>
+      <p>{{ event.team }}</p>
+    </div>
+    <span class="pill" [class.purple]="event.type === 'Reunión'">{{
+      event.type
+    }}</span>
+    @if (editable()) {
+      <button
+        class="link"
+        (click)="edit.emit(event)"
+        [attr.aria-label]="'Editar ' + event.name"
+      >
+        Editar</button
+      ><button
+        class="link danger"
+        (click)="remove.emit(event)"
+        [attr.aria-label]="'Eliminar ' + event.name"
+      >
+        Eliminar
+      </button>
+    }
+  </div>
+} @empty {
+  <p class="empty">No hay eventos programados.</p>
+}

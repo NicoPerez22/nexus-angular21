@@ -4,6 +4,7 @@
     <h1>Equipos</h1>
     <p>Administrá los jugadores y roles de cada roster.</p>
   </div>
+  <button class="action-button action-button--primary" (click)="openTeam()">＋ Crear equipo</button>
 </div>
 <div class="fullteams">
   @for (team of store.teams(); track team.id) {
@@ -12,7 +13,7 @@
       <h2>{{ team.name }}</h2>
       <p>
         {{ team.sub }} · {{ team.players.length }} jugadores<br />Win rate
-        {{ team.win }}% · Demo
+        {{ team.win }}%
       </p>
       @for (player of team.players; track $index) {
         <div class="member">
@@ -22,9 +23,11 @@
       } @empty {
         <p>Este equipo todavía no tiene jugadores.</p>
       }
-      <button class="primary rosterbutton" (click)="open(team)">
-        Editar roster
-      </button>
+      <div class="teamactions">
+        <button class="action-button action-button--primary" (click)="openTeam(team)">Editar equipo</button>
+        <button class="action-button action-button--secondary" (click)="open(team)">Editar roster</button>
+        <button class="action-button action-button--danger" (click)="requestDelete(team)">Eliminar</button>
+      </div>
     </section>
   }
 </div>
@@ -61,7 +64,37 @@
     @if (store.error()) {
       <p class="error" role="alert">{{ store.error() }}</p>
     }
-    <button class="primary rosterbutton" type="submit">Guardar roster</button>
+    <button class="action-button action-button--secondary rosterbutton" type="submit">Guardar roster</button>
   </form>
+</dialog>
+<dialog #teamDialog>
+  <form [formGroup]="teamForm" (ngSubmit)="saveTeam()">
+    <div class="dialoghead">
+      <h2>{{ teamEditing ? "Editar equipo" : "Crear equipo" }}</h2>
+      <button type="button" (click)="teamDialog.close()" aria-label="Cerrar">×</button>
+    </div>
+    <label>Nombre<input formControlName="name" maxlength="60" autofocus /></label>
+    <label>Abreviatura<input formControlName="short" maxlength="8" /></label>
+    <label>Área o disciplina<input formControlName="sub" maxlength="60" /></label>
+    <label>Win rate (%)<input type="number" formControlName="win" min="0" max="100" /></label>
+    @if (attempted && teamForm.invalid) {
+      <p class="error">Completá los datos del equipo correctamente.</p>
+    }
+    @if (store.error()) {
+      <p class="error" role="alert">{{ store.error() }}</p>
+    }
+    <button class="action-button action-button--primary rosterbutton" type="submit">
+      {{ teamEditing ? "Guardar cambios" : "Crear equipo" }}
+    </button>
+  </form>
+</dialog>
+<dialog #confirmation>
+  <h2>¿Eliminar este equipo?</h2>
+  <p>{{ deleting?.name }}</p>
+  <p class="muted">También se eliminarán su área, jugadores, eventos y tareas.</p>
+  <div class="actions">
+    <button (click)="confirmation.close()">Cancelar</button>
+    <button class="action-button action-button--danger" (click)="confirmDelete()">Eliminar</button>
+  </div>
 </dialog>
 <p class="success" role="status">{{ message() }}</p>

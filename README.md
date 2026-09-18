@@ -1,4 +1,4 @@
-# NEXUS HQ — Angular 21
+# HACHA HQ — Angular 21
 
 Aplicación frontend para gestión interna de eSports. Conserva la base azul, negra y blanca del prototipo. Angular 21.2.22, componentes standalone, Signals, Reactive Forms y rutas lazy. Sin dependencias de Sites ni de ChatGPT para ejecutarla.
 
@@ -6,7 +6,7 @@ Aplicación frontend para gestión interna de eSports. Conserva la base azul, ne
 
 Requisitos: Node.js 24 LTS (recomendado) y npm. Angular 21 admite Node ^20.19.0, ^22.12.0 o ^24.0.0 y TypeScript >=5.9 <6.0: https://angular.dev/reference/versions.
 
-1. Descomprimí el ZIP y abrí una terminal dentro de `nexus-angular21`.
+1. Descomprimí el ZIP y abrí una terminal dentro de la carpeta del proyecto.
 2. Ejecutá `npm ci`.
 3. Ejecutá `npm start`.
 4. Abrí http://localhost:4200.
@@ -15,8 +15,8 @@ No hace falta instalar Angular CLI globalmente. Se incluye `package-lock.json`. 
 
 ## Acceso de demostración
 
-- Correo: `admin@nexus.gg`
-- Contraseña: `Nexus2026!`
+- Correo: `admin@hacha.gg`
+- Contraseña: `Hacha2026!`
 
 El login valida estas credenciales de ejemplo y conserva la sesión en sessionStorage. Cerrar sesión elimina la sesión; los datos de trabajo se conservan. Las rutas internas redirigen al login si no hay sesión. Una URL interna abierta antes del login se recupera al entrar.
 
@@ -73,7 +73,7 @@ src/
 ## Comandos
 
 - `npm start`: servidor de desarrollo.
-- `npm run build`: compilación de producción en `dist/nexus-hq/browser`.
+- `npm run build`: compilación de producción en `dist/hacha-hq/browser`.
 - `npm test`: pruebas de persistencia, autenticación y navegación con Vitest y entorno DOM simulado.
 
 El ZIP incluye código y configuración; no incluye node_modules, cachés o binarios compilados. El lockfile fija las dependencias reproducibles.
@@ -82,6 +82,6 @@ El ZIP incluye código y configuración; no incluye node_modules, cachés o bina
 
 `WorkspaceService` centraliza lectura y mutaciones; reemplazá su persistencia local por llamadas HTTP a tu API. `AuthService` centraliza el acceso; reemplazá las credenciales demo por un endpoint de sesión con validación y autorización en el servidor. Registrá `provideHttpClient()` en `app.config.ts` al hacer esa integración. No guardes secretos en el frontend.
 
-Los datos de esta demo pertenecen al navegador/origen, no a una cuenta remota. Para reiniciar la demostración, eliminá la clave `nexus.workspace.v1` de localStorage en las herramientas del navegador y recargá. Si el navegador bloquea el almacenamiento, la aplicación informa el fallo sin anunciar un guardado exitoso.
+Los datos de esta demo pertenecen al navegador/origen, no a una cuenta remota. Para reiniciar la demostración, eliminá la clave `hacha.workspace.v1` de localStorage en las herramientas del navegador y recargá. Si el navegador bloquea el almacenamiento, la aplicación informa el fallo sin anunciar un guardado exitoso.
 
 Para desplegar el build en un hosting SPA, configurá fallback de rutas hacia `index.html`; por ejemplo, `/equipos` debe servir la aplicación. No abras el build con `file://`.

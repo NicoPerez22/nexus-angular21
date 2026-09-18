@@ -1,3 +1,58 @@
 :host {
   display: block;
 }
+
+.teamactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.teamactions .primary,
+.teamactions .rosterbutton {
+  margin-top: 0;
+}
+
+.action-button {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 11px 16px;
+  min-height: 40px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.action-button--primary {
+  background: #3c73ef;
+  border-color: #6490ff;
+  color: #fff;
+}
+
+.action-button--primary:hover {
+  background: #5487ff;
+}
+
+.action-button--secondary {
+  background: #247d70;
+  border-color: #4bb6a5;
+  color: #f4fffd;
+}
+
+.action-button--secondary:hover {
+  background: #319889;
+}
+
+.action-button--danger {
+  background: #a33e52;
+  border-color: #d87586;
+  color: #fff7f8;
+}
+
+.action-button--danger:hover {
+  background: #bd4b60;
+}

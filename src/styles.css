@@ -60,13 +60,10 @@ aside {
   letter-spacing: 1px;
 }
 .logo {
-  background: var(--blue);
-  font-style: italic;
-  font-size: 36px;
   width: 42px;
   height: 44px;
-  text-align: center;
-  clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 .hq {
   color: #6b95ff;
@@ -97,11 +94,10 @@ aside {
   margin-top: 4px;
 }
 .orgicon {
-  background: #243456;
-  border-radius: 6px;
-  padding: 9px;
-  color: #9ab8ff;
-  font-weight: 700;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex: 0 0 auto;
 }
 .navlabel {
   font-size: 10px;
@@ -428,12 +424,7 @@ h2 {
   place-items: center;
   width: 57px;
   height: 61px;
-  border: 1px solid #5074b3;
-  background: #243e6b;
-  font:
-    italic 800 38px "Barlow Condensed",
-    sans-serif;
-  clip-path: polygon(0 0, 100% 0, 100% 78%, 50% 100%, 0 78%);
+  object-fit: contain;
 }
 .crest.enemy {
   background: #252d3d;
@@ -628,8 +619,10 @@ footer {
   font-size: 10px;
 }
 .footerlogo {
-  font-style: italic;
-  color: #7b8aa2;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  vertical-align: middle;
   margin-right: 5px;
 }
 dialog {

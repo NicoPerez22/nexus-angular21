@@ -79,7 +79,7 @@ export function createSeed(): Workspace {
       },
       {
         id: "e4",
-        name: "Nexus vs. KRÜ · Liga Challengers",
+        name: "Hacha vs. KRÜ · Liga Challengers",
         team: "Valorant",
         date: tomorrow,
         time: "19:00",

@@ -4,8 +4,7 @@
     ><span>{{ label() }}</span>
   </div>
   <div class="header-right">
-    <span class="demo">Espacio local · Demo</span
-    ><span class="avatar small">AD</span>
+    <span class="avatar small">{{ auth.user()?.name?.slice(0, 2)?.toUpperCase() || "US" }}</span>
     <button class="link" (click)="logout()">Salir</button>
   </div>
 </header>

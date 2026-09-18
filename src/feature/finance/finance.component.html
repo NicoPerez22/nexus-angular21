@@ -1,0 +1,57 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">CONTROL ECONÓMICO</p>
+    <h1>Finanzas</h1>
+    <p>Ingresos, egresos y decisiones del equipo en una misma vista.</p>
+  </div>
+  <button class="primary" (click)="openMovement()">＋ Registrar movimiento</button>
+</div>
+
+@if (message()) { <p class="success" role="status">{{ message() }}</p> }
+
+<div class="finance-stats">
+  <article class="finance-stat balance-stat"><span>Balance actual</span><strong>{{ balance() | currency: "ARS" }}</strong><small>Ingresos menos egresos</small></article>
+  <article class="finance-stat"><span>Ingresos</span><strong>{{ income() | currency: "ARS" }}</strong><small class="income-text">Entradas registradas</small></article>
+  <article class="finance-stat"><span>Egresos</span><strong>{{ expenses() | currency: "ARS" }}</strong><small class="expense-text">Gastos registrados</small></article>
+</div>
+
+@if (showForm()) {
+  <section class="panel movement-form-panel">
+    <div class="panelhead"><h2>{{ editing() ? "Editar movimiento" : "Nuevo movimiento" }}</h2><button class="link" type="button" (click)="showForm.set(false)">Cerrar</button></div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="formrow"><label>Tipo<select formControlName="type"><option value="income">Ingreso</option><option value="expense">Egreso</option></select></label><label>Concepto<input formControlName="concept" placeholder="Ej. Sponsor mensual" /></label></div>
+      <div class="formrow"><label>Categoría<select formControlName="categoryId"><option value="" disabled>Seleccioná una categoría</option>@for (category of finance.categories(); track category.id) { @if (category.kind === 'ambos' || category.kind === (form.controls.type.value === 'income' ? 'ingreso' : 'egreso')) { <option [value]="category.id">{{ category.name }}</option> } }</select></label><label>Monto<input type="number" formControlName="amount" min="0.01" step="0.01" /></label></div>
+      <div class="formrow"><label>Fecha<input type="date" formControlName="date" /></label><label>Detalle<input formControlName="detail" placeholder="Pasajes y hotel del roster" /></label></div>
+      @if (form.invalid && form.dirty) { <p class="error">Completá concepto, categoría, monto y fecha.</p> }
+      <button class="primary" type="submit">{{ editing() ? "Guardar cambios" : "Guardar movimiento" }}</button>
+    </form>
+  </section>
+}
+
+<section class="panel category-panel">
+  <div class="panelhead"><h2>Categorías</h2><button class="link" (click)="showCategories.set(!showCategories())">{{ showCategories() ? "Ocultar" : "Administrar" }}</button></div>
+  @if (showCategories()) {
+    <form class="category-form" [formGroup]="categoryForm" (ngSubmit)="createCategory()"><input formControlName="name" placeholder="Nueva categoría" /><select formControlName="kind"><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option><option value="ambos">Ambos</option></select><button class="primary" type="submit">Crear</button></form>
+    <div class="category-list">@for (category of finance.categories(); track category.id) { <span>{{ category.name }} · {{ category.kind }} <button class="link danger" (click)="removeCategory(category.id)">Eliminar</button></span> }</div>
+  }
+</section>
+
+<div class="finance-grid">
+  <section class="panel chart-panel">
+    <div class="panelhead"><div><h2>Distribución de egresos</h2><span class="muted">Por categoría</span></div><span class="chart-total">{{ expenses() | currency: "ARS" }}</span></div>
+    @if (categoryTotals().length) {
+      <div class="bar-chart">
+        @for (item of categoryTotals(); track item.label) { <div class="bar-row"><span>{{ item.label }}</span><div class="bar-track"><i [style.width.%]="item.amount / maxCategory() * 100"></i></div><b>{{ item.amount | currency: "ARS" }}</b></div> }
+      </div>
+    } @else { <div class="chart-empty"><span class="donut empty-donut"></span><p>No hay datos de egresos para mostrar.</p></div> }
+  </section>
+  <section class="panel chart-panel">
+    <div class="panelhead"><div><h2>Flujo del período</h2><span class="muted">Ingresos vs. egresos</span></div></div>
+    <div class="flow-chart"><div class="axis"><span>100%</span><span>50%</span><span>0%</span></div><div class="columns">@for (item of monthlyChart(); track item.label) { <div class="column"><i [style.height.%]="item.income / maxMonthly() * 100"></i><em [style.height.%]="item.expenses / maxMonthly() * 100"></em><small>{{ item.label }}</small></div> }</div></div>
+  </section>
+</div>
+
+<section class="panel movements-panel">
+  <div class="panelhead"><h2>Movimientos</h2><div class="filter-tabs"><button [class.selected]="filter() === 'all'" (click)="filter.set('all')">Todos</button><button [class.selected]="filter() === 'income'" (click)="filter.set('income')">Ingresos</button><button [class.selected]="filter() === 'expense'" (click)="filter.set('expense')">Egresos</button></div></div>
+  @for (item of visibleMovements(); track item.id) { <div class="movement-row"><span class="movement-mark" [class.income-mark]="item.kind === 'ingreso'">{{ item.kind === "ingreso" ? "↗" : "↘" }}</span><div class="movement-name"><strong>{{ item.concept }}</strong><small>{{ categoryName(item.category, item.categoryId) }} · {{ item.date | date: "dd/MM/yyyy" }}{{ item.detail ? " · " + item.detail : "" }}</small></div><b [class.income-text]="item.kind === 'ingreso'" [class.expense-text]="item.kind === 'egreso'">{{ item.kind === "ingreso" ? "+" : "-" }}{{ item.amount | currency: "ARS" }}</b><button class="link" (click)="openMovement(item)">Editar</button><button class="link danger" (click)="remove(item.id)" aria-label="Eliminar movimiento">Eliminar</button></div> } @empty { <div class="empty-state"><strong>Aún no hay movimientos</strong><span>La API no devolvió movimientos para mostrar.</span></div> }
+</section>

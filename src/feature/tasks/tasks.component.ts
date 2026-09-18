@@ -16,6 +16,7 @@ export class TasksComponent {
   store = inject(WorkspaceService);
   fb = inject(FormBuilder);
   filter = signal("Todas");
+  apiAreas = signal<string[]>([]);
   message = signal("");
   editing = "";
   done = false;
@@ -23,6 +24,7 @@ export class TasksComponent {
   deleting: Task | null = null;
   areas = computed(() => [
     ...this.store.teams().map((t) => t.name),
+    ...this.apiAreas().filter((area) => !this.store.teams().some((team) => team.name === area)),
     "Staff técnico",
     "Contenido",
     "Organización",
@@ -52,6 +54,12 @@ export class TasksComponent {
     due: [localDate(), Validators.required],
     priority: [false],
   });
+  constructor() {
+    void this.loadAreas();
+  }
+  private async loadAreas() {
+    this.apiAreas.set(await this.store.getTaskAreas());
+  }
   open(task?: Task) {
     this.attempted = false;
     this.editing = task?.id || "";
@@ -75,12 +83,12 @@ export class TasksComponent {
     );
     this.dialog.nativeElement.showModal();
   }
-  save() {
+  async save() {
     this.attempted = true;
     if (this.form.invalid) return;
     const v = this.form.getRawValue();
     if (
-      this.store.saveTask({
+      await this.store.saveTask({
         ...v,
         name: v.name.trim(),
         who: v.who.trim(),
@@ -96,8 +104,8 @@ export class TasksComponent {
     this.deleting = task;
     this.confirmation.nativeElement.showModal();
   }
-  confirmDelete() {
-    if (this.deleting && this.store.deleteTask(this.deleting.id)) {
+  async confirmDelete() {
+    if (this.deleting && await this.store.deleteTask(this.deleting.id)) {
       this.confirmation.nativeElement.close();
       this.message.set("Tarea eliminada.");
     }

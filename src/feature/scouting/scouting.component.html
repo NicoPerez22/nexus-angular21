@@ -1,0 +1,34 @@
+<div class="heading">
+  <div>
+    <p class="eyebrow">TALENTO Y PROYECCIÓN</p>
+    <h1>Scouting</h1>
+    <p>Explorá jugadores del roster y concentrá toda la información de seguimiento.</p>
+  </div>
+  <span class="scouting-count">{{ players().length }} jugadores</span>
+</div>
+
+<div class="scouting-layout">
+  <section class="panel player-directory">
+    <div class="panelhead"><div><h2>Directorio de jugadores</h2><span class="muted">Roster actual</span></div></div>
+    <label class="search-field"><span>Buscar jugador</span><input [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Nombre, rol o equipo" /></label>
+    <div class="player-list">
+      @for (player of filteredPlayers(); track player.id) {
+        <button class="player-row" [class.selected]="selected()?.id === player.id" (click)="select(player)">
+          <span class="player-avatar">{{ player.name.slice(0, 2).toUpperCase() }}</span><span><strong>{{ player.name }}</strong><small>{{ player.role }} · {{ player.game || "Scouting" }}</small></span><span class="player-rating">{{ player.rating || "-" }}</span><span class="arrow">→</span>
+        </button>
+      } @empty {
+        <div class="empty-state"><strong>No hay jugadores para mostrar</strong><span>Los jugadores aparecerán al cargar los rosters de Equipos.</span></div>
+      }
+    </div>
+  </section>
+
+  <section class="panel player-detail">
+    @if (selected(); as player) {
+      <div class="detail-hero"><span class="detail-avatar">{{ player.name.slice(0, 2).toUpperCase() }}</span><div><p class="eyebrow">PERFIL DE SCOUTING</p><h2>{{ player.name }}</h2><span class="muted">{{ player.role }} · {{ player.game || "Sin juego" }}</span></div><strong class="hero-rating">{{ player.rating || "-" }}<small>/10</small></strong></div>
+      <div class="detail-section"><div class="detail-title"><h3>Características</h3><span>{{ player.traits?.length || 0 }} traits</span></div><div class="traits-list">@for (trait of player.traits || []; track trait.id || trait.name) { <div><span>{{ trait.name }}</span><b>{{ trait.rating }}/10</b></div> } @empty { <p class="muted">No hay características registradas.</p> }</div><div class="trait-input"><input [ngModel]="traitName()" (ngModelChange)="traitName.set($event)" placeholder="Nueva característica" /><input type="number" min="1" max="10" [ngModel]="traitRating()" (ngModelChange)="traitRating.set($event)" /><button class="link" (click)="saveTrait()">Guardar</button></div></div>
+      <div class="detail-section"><div class="detail-title"><h3>Observaciones</h3><span>{{ player.observations?.length || 0 }} registros</span></div><div class="observations">@for (observation of player.observations || []; track observation.id) { <article><p>{{ observation.observation || observation.text }}</p><small>{{ observation.author || "Equipo técnico" }} · {{ observation.createdAt || "" }}</small><button class="link danger" (click)="deleteObservation(observation.id)">Eliminar</button></article> } @empty { <p class="muted">No hay observaciones registradas.</p> }</div><div class="observation-input"><textarea [ngModel]="observationText()" (ngModelChange)="observationText.set($event)" placeholder="Agregar una observación..."></textarea><button class="primary" (click)="addObservation()">Guardar observación</button></div></div>
+    } @else {
+      <div class="detail-empty"><span class="target-icon">◎</span><h2>Seleccioná un jugador</h2><p>Elegí un perfil del directorio para consultar sus características y observaciones.</p></div>
+    }
+  </section>
+</div>

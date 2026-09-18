@@ -5,7 +5,7 @@
     "analytics": false
   },
   "projects": {
-    "nexus-hq": {
+    "hacha-hq": {
       "projectType": "application",
       "root": "",
       "sourceRoot": "src",
@@ -13,10 +13,17 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/nexus-hq",
+            "outputPath": "dist/hacha-hq",
             "browser": "src/main.ts",
             "index": "src/index.html",
             "tsConfig": "tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "resource/img",
+                "output": "img"
+              }
+            ],
             "styles": ["src/styles.css"]
           },
           "configurations": {
@@ -46,10 +53,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "development": {
-              "buildTarget": "nexus-hq:build:development"
+              "buildTarget": "hacha-hq:build:development"
             },
             "production": {
-              "buildTarget": "nexus-hq:build:production"
+              "buildTarget": "hacha-hq:build:production"
             }
           },
           "defaultConfiguration": "development"

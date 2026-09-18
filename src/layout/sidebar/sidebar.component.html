@@ -1,13 +1,12 @@
 <aside>
-  <a class="brand" routerLink="/resumen"
-    ><b class="logo">N</b
-    ><span
-      >NEXUS<span class="hq">HQ</span><small>ESPORTS WORKSPACE</small></span
-    ></a
-  >
+  <a class="brand" routerLink="/resumen">
+    <img class="logo" src="img/hacha.png" alt="Hacha Esports" />
+    <span>{{ organization.data().brand || "HACHA" }}<span class="hq">HQ</span><small>ESPORTS WORKSPACE</small></span>
+  </a>
+  
   <div class="org">
-    <span class="orgicon">N</span>
-    <div>Nexus Esports<small>Organización profesional</small></div>
+    <img class="orgicon" src="img/hacha.png" alt="Hacha Esports" />
+    <div>{{ organization.data().name || "Hacha Esports" }}<small>Organización profesional</small></div>
     <span>⌄</span>
   </div>
   <div class="navlabel">WORKSPACE</div>
@@ -24,18 +23,23 @@
         }
       </a>
     }
+    @if (isAdmin()) {
+      <a routerLink="/usuarios" routerLinkActive="active"
+        ><i aria-hidden="true">♙</i>Usuarios</a
+      >
+    }
   </nav>
   <div class="sidebottom">
-    <div class="season">
-      <span class="tiny">TEMPORADA 2026</span
+    <!-- <div class="season">
+      <span class="tiny">TEMPORADA {{ organization.data().season || "2026" }}</span
       ><strong>Todo empieza en equipo.</strong>
       <div class="seasonline"></div>
       <small>Un mismo objetivo. El siguiente nivel.</small>
-    </div>
+    </div> -->
     <button class="logout" (click)="logout()">Cerrar sesión ↗</button>
     <div class="profile">
-      <span class="avatar">AD</span>
-      <div>Admin<small>Team manager</small></div>
+      <span class="avatar">{{ auth.user()?.name?.slice(0, 2)?.toUpperCase() || "US" }}</span>
+      <div>{{ auth.user()?.name || auth.user()?.email || "Usuario" }}<small>Sesión activa</small></div>
       <span class="online"></span>
     </div>
   </div>

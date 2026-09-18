@@ -20,14 +20,14 @@ export class LoginComponent {
     email: ["", [Validators.required, Validators.email]],
     password: ["", Validators.required],
   });
-  submit() {
+  async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.error.set("Completá un correo válido y tu contraseña.");
       return;
     }
     const v = this.form.getRawValue();
-    if (this.auth.login(v.email, v.password)) {
+    if (await this.auth.login(v.email, v.password)) {
       const target = this.route.snapshot.queryParamMap.get("returnUrl");
       this.router.navigateByUrl(
         target && /^\/(resumen|equipos|calendario|tareas)(\?|$)/.test(target)
@@ -36,7 +36,7 @@ export class LoginComponent {
       );
     } else {
       this.error.set(
-        "No se pudo iniciar sesión. Revisá las credenciales de demostración y que el navegador permita almacenamiento.",
+        "No se pudo iniciar sesión. Revisá tus credenciales y la conexión con el servidor.",
       );
     }
   }

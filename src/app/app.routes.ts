@@ -1,5 +1,6 @@
 import { Routes } from "@angular/router";
 import { authGuard, guestGuard } from "../core/guards/auth.guard";
+import { adminGuard } from "../core/guards/admin.guard";
 export const routes: Routes = [
   {
     path: "login",
@@ -16,7 +17,7 @@ export const routes: Routes = [
       { path: "", pathMatch: "full", redirectTo: "resumen" },
       {
         path: "resumen",
-        title: "Resumen · NEXUS HQ",
+        title: "Resumen · HACHA HQ",
         loadComponent: () =>
           import("../feature/dashboard/dashboard.component").then(
             (m) => m.DashboardComponent,
@@ -24,7 +25,7 @@ export const routes: Routes = [
       },
       {
         path: "equipos",
-        title: "Equipos · NEXUS HQ",
+        title: "Equipos · HACHA HQ",
         loadComponent: () =>
           import("../feature/teams/teams.component").then(
             (m) => m.TeamsComponent,
@@ -32,7 +33,7 @@ export const routes: Routes = [
       },
       {
         path: "calendario",
-        title: "Calendario · NEXUS HQ",
+        title: "Calendario · HACHA HQ",
         loadComponent: () =>
           import("../feature/calendar/calendar.component").then(
             (m) => m.CalendarComponent,
@@ -40,10 +41,35 @@ export const routes: Routes = [
       },
       {
         path: "tareas",
-        title: "Tareas · NEXUS HQ",
+        title: "Tareas · HACHA HQ",
         loadComponent: () =>
           import("../feature/tasks/tasks.component").then(
             (m) => m.TasksComponent,
+          ),
+      },
+      {
+        path: "usuarios",
+        canActivate: [adminGuard],
+        title: "Usuarios · HACHA HQ",
+        loadComponent: () =>
+          import("../feature/users/users.component").then(
+            (m) => m.UsersComponent,
+          ),
+      },
+      {
+        path: "finanzas",
+        title: "Finanzas · HACHA HQ",
+        loadComponent: () =>
+          import("../feature/finance/finance.component").then(
+            (m) => m.FinanceComponent,
+          ),
+      },
+      {
+        path: "scouting",
+        title: "Scouting · HACHA HQ",
+        loadComponent: () =>
+          import("../feature/scouting/scouting.component").then(
+            (m) => m.ScoutingComponent,
           ),
       },
     ],

@@ -1,4 +1,6 @@
 import { TestBed } from "@angular/core/testing";
+import { provideHttpClient } from "@angular/common/http";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { provideRouter, Router } from "@angular/router";
 import { RouterTestingHarness } from "@angular/router/testing";
 import { describe, it, expect, beforeEach } from "vitest";
@@ -9,14 +11,19 @@ describe("Protected page navigation", () => {
     sessionStorage.clear();
     localStorage.clear();
     TestBed.resetTestingModule();
-    TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+    TestBed.configureTestingModule({
+      providers: [provideRouter(routes), provideHttpClient(), provideHttpClientTesting()],
+    });
   });
   it("redirects anonymous navigation to login", async () => {
     await RouterTestingHarness.create("/equipos");
     expect(TestBed.inject(Router).url).toContain("/login");
   });
   it("renders every feature after login", async () => {
-    TestBed.inject(AuthService).login("admin@nexus.gg", "Nexus2026!");
+    const login = TestBed.inject(AuthService).login("admin@hacha.gg", "Hacha2026!");
+    const http = TestBed.inject(HttpTestingController);
+    http.expectOne("/api/auth/login").flush({ token: "test-token", user: { email: "admin@hacha.gg" } });
+    await login;
     const h = await RouterTestingHarness.create();
     for (const url of ["/resumen", "/equipos", "/calendario", "/tareas"]) {
       await h.navigateByUrl(url);

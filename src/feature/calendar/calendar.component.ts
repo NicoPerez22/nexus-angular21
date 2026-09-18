@@ -19,6 +19,7 @@ export class CalendarComponent {
   route = inject(ActivatedRoute);
   router = inject(Router);
   filter = signal("Todos");
+  apiAreas = signal<string[]>([]);
   message = signal("");
   editing = "";
   attempted = false;
@@ -26,6 +27,7 @@ export class CalendarComponent {
   filters = computed(() => [
     "Todos",
     ...this.store.teams().map((t) => t.name),
+    ...this.apiAreas().filter((area) => !this.store.teams().some((team) => team.name === area)),
     "Organización",
   ]);
   filtered = computed(() =>
@@ -49,6 +51,12 @@ export class CalendarComponent {
     time: ["18:00", Validators.required],
     type: ["Entrenamiento", Validators.required],
   });
+  constructor() {
+    void this.loadAreas();
+  }
+  private async loadAreas() {
+    this.apiAreas.set(await this.store.getEventAreas());
+  }
   ngAfterViewInit() {
     if (this.route.snapshot.queryParamMap.has("nuevo")) {
       queueMicrotask(() => {
@@ -79,12 +87,12 @@ export class CalendarComponent {
     );
     this.dialog.nativeElement.showModal();
   }
-  save() {
+  async save() {
     this.attempted = true;
     if (this.form.invalid) return;
     const value = this.form.getRawValue();
     if (
-      this.store.saveEvent({
+      await this.store.saveEvent({
         ...value,
         name: value.name.trim(),
         id: this.editing || crypto.randomUUID(),
@@ -99,8 +107,8 @@ export class CalendarComponent {
     this.deleting = event;
     this.confirmation.nativeElement.showModal();
   }
-  confirmDelete() {
-    if (this.deleting && this.store.deleteEvent(this.deleting.id)) {
+  async confirmDelete() {
+    if (this.deleting && await this.store.deleteEvent(this.deleting.id)) {
       this.confirmation.nativeElement.close();
       this.message.set("Evento eliminado.");
     }

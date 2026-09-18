@@ -13,7 +13,7 @@ import { AuthService } from "../../core/services/auth.service";
 export class HeaderComponent {
   router = inject(Router);
   auth = inject(AuthService);
-  logout() { this.auth.logout(); this.router.navigateByUrl("/login"); }
+  async logout() { await this.auth.logout(); this.router.navigateByUrl("/login"); }
   current = toSignal(
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)),
     { initialValue: null },
@@ -27,6 +27,8 @@ export class HeaderComponent {
           equipos: "Equipos",
           calendario: "Calendario",
           tareas: "Tareas",
+          finanzas: "Finanzas",
+          scouting: "Scouting",
         } as Record<string, string>
       )[this.router.url.split("/")[1]?.split("?")[0]] || "Resumen"
     );
